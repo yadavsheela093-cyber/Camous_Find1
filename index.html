@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CampusFind – Lost &amp; Found Portal</title>
+  <meta name="description" content="CampusFind helps students report and find lost belongings on campus.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#browse">Skip to items</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="CampusFind home">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M5 3h12l7 7v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="#FFC93C" stroke="#14213D" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="12" cy="9" r="2" fill="#14213D"/>
+      </svg>
+      <span>CampusFind</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="#browse">Browse items</a>
+      <a href="#report">Report an item</a>
+      <a href="#how">How it works</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Lost something on campus? Search before you give up.</h1>
+        <p class="lede">Students post what they lose and what they find. Check the board, or add your own ticket.</p>
+
+        <form class="hero-search" id="heroSearch" role="search">
+          <label for="q" class="visually-hidden">Search lost and found items</label>
+          <input id="q" type="search" placeholder="Try “black backpack” or “library”" autocomplete="off">
+          <button type="submit" class="btn btn-dark">Search items</button>
+        </form>
+
+        <div class="quick" aria-label="Quick searches">
+          <span>Often lost:</span>
+          <button type="button" class="chip" data-q="ID card">ID card</button>
+          <button type="button" class="chip" data-q="keys">Keys</button>
+          <button type="button" class="chip" data-q="charger">Charger</button>
+          <button type="button" class="chip" data-q="bottle">Bottle</button>
+        </div>
+      </div>
+
+      <aside class="hero-tag" aria-label="Board summary">
+        <svg class="string" viewBox="0 0 120 90" aria-hidden="true">
+          <path d="M10 0 C 40 60, 80 60, 110 90" fill="none" stroke="#14213D" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="big-tag">
+          <div class="big-tag-hole"></div>
+          <p class="big-tag-title">Campus board</p>
+          <dl>
+            <div><dt>Still lost</dt><dd id="statLost">0</dd></div>
+            <div><dt>Found, waiting</dt><dd id="statFound">0</dd></div>
+            <div><dt>Back with owner</dt><dd id="statReturned">0</dd></div>
+          </dl>
+        </div>
+      </aside>
+    </section>
+
+    <!-- BROWSE -->
+    <section class="section" id="browse" aria-labelledby="browseTitle">
+      <div class="section-head">
+        <h2 id="browseTitle">The board</h2>
+        <p>Open a ticket to see where it was lost or found and how to contact the poster.</p>
+      </div>
+
+      <div class="filters">
+        <div class="seg" role="group" aria-label="Filter by type" id="typeSeg">
+          <button type="button" class="seg-btn is-on" data-type="all" aria-pressed="true">All</button>
+          <button type="button" class="seg-btn" data-type="lost" aria-pressed="false">Lost</button>
+          <button type="button" class="seg-btn" data-type="found" aria-pressed="false">Found</button>
+        </div>
+
+        <label class="field-inline">
+          <span>Category</span>
+          <select id="filterCategory"><option value="all">All categories</option></select>
+        </label>
+
+        <label class="field-inline">
+          <span>Status</span>
+          <select id="filterStatus">
+            <option value="open">Still open</option>
+            <option value="returned">Returned to owner</option>
+            <option value="all">Everything</option>
+          </select>
+        </label>
+      </div>
+
+      <p class="result-line" id="resultLine" aria-live="polite"></p>
+      <ul class="grid" id="grid"></ul>
+
+      <div class="empty" id="empty" hidden>
+        <h3>No tickets match yet</h3>
+        <p>Try fewer words or clear the filters. If it isn’t listed, add it so a finder can match it.</p>
+        <div class="empty-actions">
+          <button type="button" class="btn btn-ghost" id="clearFilters">Clear search and filters</button>
+          <a class="btn btn-dark" href="#report">Report an item</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORT -->
+    <section class="section report" id="report" aria-labelledby="reportTitle">
+      <div class="section-head">
+        <h2 id="reportTitle">Report an item</h2>
+        <p>Write enough for the owner to recognise it, but keep one detail back (a sticker, a scratch) to check ownership.</p>
+      </div>
+
+      <form id="reportForm" class="form" novalidate>
+        <fieldset class="type-pick">
+          <legend>What happened?</legend>
+          <label class="pick pick-lost">
+            <input type="radio" name="type" value="lost" checked>
+            <span><strong>I lost something</strong><small>Post it so finders can reach you</small></span>
+          </label>
+          <label class="pick pick-found">
+            <input type="radio" name="type" value="found">
+            <span><strong>I found something</strong><small>Post it so the owner can claim it</small></span>
+          </label>
+        </fieldset>
+
+        <div class="row">
+          <div class="field">
+            <label for="title">Item name</label>
+            <input id="title" name="title" type="text" maxlength="60" placeholder="e.g. Blue water bottle" required>
+            <p class="err" data-for="title"></p>
+          </div>
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category" name="category" required></select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="location" id="locLabel">Where did you lose it?</label>
+            <input id="location" name="location" type="text" maxlength="80" placeholder="e.g. Library, 2nd floor" required>
+            <p class="err" data-for="location"></p>
+          </div>
+          <div class="field">
+            <label for="date" id="dateLabel">Date lost</label>
+            <input id="date" name="date" type="date" required>
+            <p class="err" data-for="date"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="desc">Description</label>
+          <textarea id="desc" name="desc" rows="4" maxlength="400" placeholder="Colour, brand, size, anything that stands out" required></textarea>
+          <p class="err" data-for="desc"></p>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" maxlength="40" placeholder="First name is fine" required>
+            <p class="err" data-for="name"></p>
+          </div>
+          <div class="field">
+            <label for="contact">Email or phone</label>
+            <input id="contact" name="contact" type="text" maxlength="60" placeholder="you@college.edu or 98xxxxxx10" required>
+            <p class="err" data-for="contact"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="photo">Photo <span class="opt">(optional)</span></label>
+          <input id="photo" name="photo" type="file" accept="image/*">
+          <div class="preview" id="preview" hidden>
+            <img id="previewImg" alt="Preview of the uploaded item">
+            <button type="button" class="btn btn-ghost small" id="removePhoto">Remove photo</button>
+          </div>
+        </div>
+
+        <div class="form-foot">
+          <button type="submit" class="btn btn-dark">Post ticket</button>
+          <p class="note">Tickets are saved in this browser only. Your contact details show on the ticket, so share only what you’re comfortable with.</p>
+        </div>
+      </form>
+    </section>
+
+    <!-- HOW -->
+    <section class="section" id="how" aria-labelledby="howTitle">
+      <div class="section-head">
+        <h2 id="howTitle">How it works</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="step-n">1</span>
+          <h3>Post a ticket</h3>
+          <p>Say what you lost or found, where, and when. Add a photo if you have one.</p>
+        </li>
+        <li>
+          <span class="step-n">2</span>
+          <h3>Search the board</h3>
+          <p>Filter by lost or found, category, or any word like a place or colour.</p>
+        </li>
+        <li>
+          <span class="step-n">3</span>
+          <h3>Contact and return</h3>
+          <p>Open the ticket, get in touch, then mark it as returned so the board stays current.</p>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>CampusFind</strong> – a student-run lost and found board.</p>
+    <p>For valuables like laptops or wallets, also hand them in at the security desk.</p>
+  </footer>
+
+  <!-- DETAIL MODAL -->
+  <dialog id="modal" aria-labelledby="mTitle">
+    <div class="modal-body" id="modalBody"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
